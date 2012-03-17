@@ -47,6 +47,6 @@ class ProcTest extends \PHPUnit_Framework_TestCase
         $begin = time();
         $proc->retry(3, array('wait' => '2'));
         $end = time();
-        $this->assertEquals(2 * 3, $end - $begin);
+        $this->assertEquals(2 * 2, $end - $begin);
     }
 }

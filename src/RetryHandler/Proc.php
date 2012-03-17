@@ -44,12 +44,14 @@ class Proc
 
     protected function _retry($max, $wait, $acceptedException)
     {
-        for ($i = 0; $i < $max; $i++) {
+        for ($i = 1; $i <= $max; $i++) {
             try {
                 return call_user_func($this->_proc);
             } catch (Exception $e) {
             }
-            sleep($wait);
+            if ($i < $max) {
+                sleep($wait);
+            }
         }
     }
 }
