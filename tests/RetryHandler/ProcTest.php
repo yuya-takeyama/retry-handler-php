@@ -2,6 +2,7 @@
 namespace RetryHandler;
 
 use \RetryHandler\Proc;
+use \RetryHandler\RetryOverException;
 
 use \Exception;
 
@@ -32,8 +33,22 @@ class ProcTest extends \PHPUnit_Framework_TestCase
             throw new Exception;
         };
         $proc = new Proc($counter);
-        $proc->retry(3);
+        try {
+            $proc->retry(3);
+        } catch (RetryOverException $e) {}
         $this->assertEquals(3, $count);
+    }
+
+    /**
+     * @test
+     * @expectedException RetryHandler\RetryOverException
+     */
+    public function retry_should_throw_RetryOverException_if_all_trial_failed()
+    {
+        $proc = new Proc(function () {
+            throw new Exception;
+        });
+        $proc->retry(1);
     }
 
     /**
@@ -45,7 +60,9 @@ class ProcTest extends \PHPUnit_Framework_TestCase
             throw new Exception;
         });
         $begin = time();
-        $proc->retry(3, array('wait' => '2'));
+        try {
+            $proc->retry(3, array('wait' => '2'));
+        } catch (RetryOverException $e) {}
         $end = time();
         $this->assertEquals(2 * 2, $end - $begin);
     }

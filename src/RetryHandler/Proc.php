@@ -1,6 +1,8 @@
 <?php
 namespace RetryHandler;
 
+use \RetryHandler\RetryOverException;
+
 use \Exception;
 
 class Proc
@@ -51,6 +53,8 @@ class Proc
             }
             if ($i < $max) {
                 sleep($wait);
+            } else {
+                throw new RetryOverException;
             }
         }
     }
