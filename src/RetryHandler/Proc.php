@@ -49,6 +49,7 @@ class Proc
                 return call_user_func($this->_proc);
             } catch (Exception $e) {
             }
+            sleep($wait);
         }
     }
 }

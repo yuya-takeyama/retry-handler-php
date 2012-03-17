@@ -35,4 +35,18 @@ class ProcTest extends \PHPUnit_Framework_TestCase
         $proc->retry(3);
         $this->assertEquals(3, $count);
     }
+
+    /**
+     * @test
+     */
+    public function retry_should_wait_specified_seconds_before_next_trial()
+    {
+        $proc = new Proc(function () {
+            throw new Exception;
+        });
+        $begin = time();
+        $proc->retry(3, array('wait' => '2'));
+        $end = time();
+        $this->assertEquals(2 * 3, $end - $begin);
+    }
 }
