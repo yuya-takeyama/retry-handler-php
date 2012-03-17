@@ -6,7 +6,7 @@ develop: [![Build Status](https://secure.travis-ci.org/yuya-takeyama/retry-handl
 
 Retrys any procedure.
 
-Heavily inspired by @kimoto/retry-handler
+Heavily inspired by [kimoto/retry-handler](https://github.com/kimoto/retry-handler)
 
 Synopsis
 --------
