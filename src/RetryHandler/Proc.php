@@ -4,12 +4,13 @@ namespace RetryHandler;
 use \RetryHandler\RetryOverException;
 
 use \Exception;
+use \RuntimeException;
 
 class Proc
 {
     const DEFAULT_MAX_RETRY = 3;
     const DEFAULT_WAIT_TIME = 1;
-    const DEFAULT_ACCEPTED_EXCEPTION = 'RetryHandler\RetryException';
+    const DEFAULT_ACCEPTED_EXCEPTION = 'RuntimeException';
 
     /**
      * @var callable
@@ -50,6 +51,9 @@ class Proc
             try {
                 return call_user_func($this->_proc);
             } catch (Exception $e) {
+                if (!is_a($e, $acceptedException)) {
+                    throw $e;
+                }
             }
             if ($i < $max) {
                 sleep($wait);

@@ -5,6 +5,8 @@ use \RetryHandler\Proc;
 use \RetryHandler\RetryOverException;
 
 use \Exception;
+use \RuntimeException;
+use \LogicException;
 
 class ProcTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,7 +32,7 @@ class ProcTest extends \PHPUnit_Framework_TestCase
         $count = 0;
         $counter = function () use (&$count) {
             $count++;
-            throw new Exception;
+            throw new RuntimeException;
         };
         $proc = new Proc($counter);
         try {
@@ -46,7 +48,7 @@ class ProcTest extends \PHPUnit_Framework_TestCase
     public function retry_should_throw_RetryOverException_if_all_trial_failed()
     {
         $proc = new Proc(function () {
-            throw new Exception;
+            throw new RuntimeException;
         });
         $proc->retry(1);
     }
@@ -57,7 +59,7 @@ class ProcTest extends \PHPUnit_Framework_TestCase
     public function retry_should_wait_specified_seconds_before_next_trial()
     {
         $proc = new Proc(function () {
-            throw new Exception;
+            throw new RuntimeException;
         });
         $begin = time();
         try {
@@ -65,5 +67,17 @@ class ProcTest extends \PHPUnit_Framework_TestCase
         } catch (RetryOverException $e) {}
         $end = time();
         $this->assertEquals(2 * 2, $end - $begin);
+    }
+
+    /**
+     * @test
+     * @expectedException LogicException
+     */
+    public function retry_should_throw_Exception_thrown_if_it_is_not_accepted_exception()
+    {
+        $proc = new Proc(function () {
+            throw new LogicException;
+        });
+        $proc->retry(3);
     }
 }
