@@ -69,6 +69,19 @@ class ProcTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2 * 2, $end - $begin);
     }
 
+    public function retry_should_wait_specified_milliseconds_before_next_trial()
+    {
+        $proc = new Proc(function() {
+            throw new RuntimeException();
+        });
+        $begin = microtime(true);
+        try {
+            $proc->retry(3, array('uwait' => 100 * 1000));
+        } catch (RetryOverException $e) {}
+        $end = microtime(true);
+        $this->assertEquals(300, round(($end - $begin) * 1000));
+    }
+
     /**
      * @test
      * @expectedException LogicException

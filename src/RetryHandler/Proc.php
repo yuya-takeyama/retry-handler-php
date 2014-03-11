@@ -37,7 +37,12 @@ class Proc
         $options = array_merge($options, $moreOptions);
 
         $max = isset($options['max']) ? $options['max'] : self::DEFAULT_MAX_RETRY;
-        $wait = isset($options['wait']) ? $options['wait'] : self::DEFAULT_WAIT_TIME;
+        if (isset($options['uwait'])) {
+            $wait = $options['uwait'];
+        } else {
+            $wait = isset($options['wait']) ? $options['wait'] : self::DEFAULT_WAIT_TIME;
+            $wait *= (1000 * 1000);
+        }
         $exception = isset($options['accepted_exception']) ?
             $options['accepted_exception'] :
             self::DEFAULT_ACCEPTED_EXCEPTION;
@@ -56,7 +61,7 @@ class Proc
                 }
             }
             if ($i < $max) {
-                sleep($wait);
+                usleep($wait);
             } else {
                 throw new RetryOverException;
             }
